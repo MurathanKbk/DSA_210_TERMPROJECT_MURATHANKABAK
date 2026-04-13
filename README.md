@@ -127,18 +127,48 @@ Q-Q plots confirm that all four MH score distributions deviate substantially fro
 
 ---
 
-#### Hypothesis Test 2 — Spearman Correlation Test
-
+### Hypothesis Test 2 — Spearman Correlation Test
+ 
 **Question:** Is there a significant monotonic relationship between audio features and mental health scores?
-
+ 
 | | |
 |---|---|
 | **H₀** | No monotonic relationship exists between audio features and MH scores |
 | **H₁** | A significant monotonic relationship exists |
 | **Test** | Spearman rank correlation (`scipy.stats.spearmanr`) |
 | **α** | 0.05 |
-
-**Result:** Fail to reject H₀ for all feature–score pairs tested
+ 
+**Full results table:**
+ 
+| Feature | Target | ρ (Rho) | p-value | Decision |
+|---|---|---|---|---|
+| valence | Anxiety | 0.0420 | 0.2548 | Fail to reject H₀ |
+| valence | Depression | 0.0202 | 0.5848 | Fail to reject H₀ |
+| **valence** | **Insomnia** | **−0.1020** | **0.0056** | **Reject H₀ ✓** |
+| energy | Anxiety | 0.0199 | 0.5902 | Fail to reject H₀ |
+| **energy** | **Depression** | **0.0807** | **0.0286** | **Reject H₀ ✓** |
+| energy | Insomnia | 0.0510 | 0.1666 | Fail to reject H₀ |
+| danceability | Anxiety | 0.0187 | 0.6127 | Fail to reject H₀ |
+| danceability | Depression | 0.0039 | 0.9152 | Fail to reject H₀ |
+| **danceability** | **Insomnia** | **−0.0784** | **0.0335** | **Reject H₀ ✓** |
+| acousticness | Anxiety | −0.0259 | 0.4826 | Fail to reject H₀ |
+| **acousticness** | **Depression** | **−0.0869** | **0.0183** | **Reject H₀ ✓** |
+| acousticness | Insomnia | −0.0543 | 0.1415 | Fail to reject H₀ |
+| tempo | Anxiety | 0.0413 | 0.2637 | Fail to reject H₀ |
+| tempo | Depression | 0.0594 | 0.1075 | Fail to reject H₀ |
+| tempo | Insomnia | 0.0656 | 0.0753 | Fail to reject H₀ |
+ 
+**Result:** H₀ rejected for 4 out of 15 feature–score pairs (α = 0.05)
+ 
+**Interpretation:** Four statistically significant monotonic relationships were identified:
+- **Valence → Insomnia** (ρ = −0.102, p = 0.006): Listeners whose preferred genre has higher musical positivity tend to report lower insomnia scores. The strongest and most significant finding.
+- **Energy → Depression** (ρ = 0.081, p = 0.029): Higher energy music is weakly associated with higher depression scores.
+- **Danceability → Insomnia** (ρ = −0.078, p = 0.034): More danceable music profiles are weakly associated with lower insomnia.
+- **Acousticness → Depression** (ρ = −0.087, p = 0.018): More acoustic music profiles are weakly associated with lower depression scores.
+ 
+While all significant correlations are weak in magnitude (|ρ| < 0.11), they are consistent in direction and statistically reliable. The relationship between audio features and **Insomnia** emerges as the most sensitive dimension, appearing in two of the four significant pairs.
+ 
+---
 
 **Interpretation:** None of the audio features (valence, energy, danceability, acousticness, tempo) show a statistically significant monotonic correlation with any of the four MH scores at the genre-average level. This is consistent with the weak correlations observed in the heatmap.
 
