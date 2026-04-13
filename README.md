@@ -101,6 +101,13 @@ Bar charts comparing genre groups show visible differences in average scores. No
 Spearman correlations between the 7 audio features and 4 MH scores are weak across the board (all |r| < 0.15). The strongest observed relationship is `valence` vs `Insomnia` (r = −0.12), suggesting that higher musical positivity is weakly associated with lower insomnia — consistent with intuition but not statistically conclusive at the genre-average level.
 
 ---
+#### Missing Value & Outlier Analysis
+ 
+**Missing values:** None found across all mental health scores and audio features. The merged dataset is complete with no imputation required.
+ 
+**Outlier analysis:** The IQR method initially flagged 45–63 apparent outliers across Depression, Insomnia, and OCD. However, directional inspection confirmed 0 low and 0 high outliers in all three cases. This is expected behavior — because the scores are bounded integers (0–10) with wide natural spread, the IQR fences extend beyond the possible scoring range, making true outliers mathematically impossible. No data removal or cleaning was necessary.
+ 
+---
 
 ### Stage 3 — Hypothesis Testing
 
