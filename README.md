@@ -36,6 +36,11 @@ Music's psychological impact is widely studied, yet most research relies on subj
 ├── mxmh_survey_results.csv   # Primary survey dataset
 ├── dataset.csv               # Spotify audio features dataset
 ├── merged_data.csv           # Enriched merged dataset (output)
+├── mh_distributions.png      # Mental health score distributions
+├── genre_mh_scores.png       # Average MH scores by genre
+├── correlation_heatmap.png   # Audio features vs MH scores heatmap
+└── qq_plots.png              # Q-Q plots for normality assessment
+```
 
 ---
 
@@ -100,13 +105,12 @@ Bar charts comparing genre groups show visible differences in average scores. No
 
 Spearman correlations between the 7 audio features and 4 MH scores are weak across the board (all |r| < 0.15). The strongest observed relationship is `valence` vs `Insomnia` (r = −0.12), suggesting that higher musical positivity is weakly associated with lower insomnia — consistent with intuition but not statistically conclusive at the genre-average level.
 
----
 #### Missing Value & Outlier Analysis
- 
+
 **Missing values:** None found across all mental health scores and audio features. The merged dataset is complete with no imputation required.
- 
+
 **Outlier analysis:** The IQR method initially flagged 45–63 apparent outliers across Depression, Insomnia, and OCD. However, directional inspection confirmed 0 low and 0 high outliers in all three cases. This is expected behavior — because the scores are bounded integers (0–10) with wide natural spread, the IQR fences extend beyond the possible scoring range, making true outliers mathematically impossible. No data removal or cleaning was necessary.
- 
+
 ---
 
 ### Stage 3 — Hypothesis Testing
@@ -134,20 +138,22 @@ Q-Q plots confirm that all four MH score distributions deviate substantially fro
 
 ---
 
-### Hypothesis Test 2 — Spearman Correlation Test
- 
+#### Hypothesis Test 2 — Spearman Correlation Test
+
 **Question:** Is there a significant monotonic relationship between audio features and mental health scores?
- 
+
 | | |
 |---|---|
 | **H₀** | No monotonic relationship exists between audio features and MH scores |
 | **H₁** | A significant monotonic relationship exists |
 | **Test** | Spearman rank correlation (`scipy.stats.spearmanr`) |
 | **α** | 0.05 |
- 
-**Full results table:**
- 
-| Feature | Target | ρ (Rho) | p-value | Decision |
+
+This test was run twice — first with genre-level average features, then with individual track-level features matched via each respondent's self-reported BPM (valid range 40–250 BPM; 621/736 rows matched individually, 115 filled with genre average fallback).
+
+**Results — Genre-level average features:**
+
+| Feature | Target | ρ | p-value | Decision |
 |---|---|---|---|---|
 | valence | Anxiety | 0.0420 | 0.2548 | Fail to reject H₀ |
 | valence | Depression | 0.0202 | 0.5848 | Fail to reject H₀ |
@@ -164,20 +170,28 @@ Q-Q plots confirm that all four MH score distributions deviate substantially fro
 | tempo | Anxiety | 0.0413 | 0.2637 | Fail to reject H₀ |
 | tempo | Depression | 0.0594 | 0.1075 | Fail to reject H₀ |
 | tempo | Insomnia | 0.0656 | 0.0753 | Fail to reject H₀ |
- 
-**Result:** H₀ rejected for 4 out of 15 feature–score pairs (α = 0.05)
- 
-**Interpretation:** Four statistically significant monotonic relationships were identified:
-- **Valence → Insomnia** (ρ = −0.102, p = 0.006): Listeners whose preferred genre has higher musical positivity tend to report lower insomnia scores. The strongest and most significant finding.
-- **Energy → Depression** (ρ = 0.081, p = 0.029): Higher energy music is weakly associated with higher depression scores.
-- **Danceability → Insomnia** (ρ = −0.078, p = 0.034): More danceable music profiles are weakly associated with lower insomnia.
-- **Acousticness → Depression** (ρ = −0.087, p = 0.018): More acoustic music profiles are weakly associated with lower depression scores.
- 
-While all significant correlations are weak in magnitude (|ρ| < 0.11), they are consistent in direction and statistically reliable. The relationship between audio features and **Insomnia** emerges as the most sensitive dimension, appearing in two of the four significant pairs.
- 
----
 
-**Interpretation:** None of the audio features (valence, energy, danceability, acousticness, tempo) show a statistically significant monotonic correlation with any of the four MH scores at the genre-average level. This is consistent with the weak correlations observed in the heatmap.
+**Results — Individual track-level features (BPM-matched):**
+
+| Feature | Target | ρ | p-value | Decision |
+|---|---|---|---|---|
+| **valence** | **Insomnia** | **−0.0794** | **0.0314** | **Reject H₀ ✓** |
+| valence | Anxiety | 0.0390 | 0.2903 | Fail to reject H₀ |
+| valence | Depression | −0.0429 | 0.2451 | Fail to reject H₀ |
+| energy | Anxiety | 0.0184 | 0.6183 | Fail to reject H₀ |
+| energy | Depression | 0.0309 | 0.4032 | Fail to reject H₀ |
+| energy | Insomnia | −0.0149 | 0.6874 | Fail to reject H₀ |
+| danceability | Anxiety | 0.0410 | 0.2664 | Fail to reject H₀ |
+| danceability | Depression | −0.0031 | 0.9333 | Fail to reject H₀ |
+| danceability | Insomnia | −0.0561 | 0.1281 | Fail to reject H₀ |
+| acousticness | Anxiety | −0.0104 | 0.7788 | Fail to reject H₀ |
+| acousticness | Depression | −0.0722 | 0.0502 | Fail to reject H₀ |
+| acousticness | Insomnia | −0.0693 | 0.0602 | Fail to reject H₀ |
+| tempo | Anxiety | 0.0559 | 0.1295 | Fail to reject H₀ |
+| tempo | Depression | 0.0647 | 0.0795 | Fail to reject H₀ |
+| tempo | Insomnia | 0.0708 | 0.0549 | Fail to reject H₀ |
+
+**Interpretation:** The most robust and consistent finding across both approaches is **valence → Insomnia** (genre-level: ρ = −0.102, p = 0.006; individual-level: ρ = −0.079, p = 0.031). This relationship holds regardless of the feature assignment method, indicating that listeners whose music has higher positivity tend to report lower insomnia scores. At the genre-level, additional significant pairs emerged (energy → Depression, danceability → Insomnia, acousticness → Depression), but these did not survive the transition to individual track features, suggesting they were partially driven by genre-level aggregation rather than individual listening patterns. **Insomnia** consistently emerges as the mental health dimension most sensitive to musical audio properties.
 
 ---
 
@@ -200,13 +214,17 @@ While all significant correlations are weak in magnitude (|ρ| < 0.11), they are
 
 ## Key Findings
 
-1. **Genre-level audio profiles do not significantly predict individual MH scores.** All three hypothesis tests failed to reject their null hypotheses, indicating that the psychoacoustic properties of a preferred genre, when averaged across tracks, are too coarse to capture individual mental health variation.
+1. **Genre groups do not significantly differ in anxiety scores.** Kruskal-Wallis test found no statistically significant difference across 16 genre groups, suggesting that genre preference alone is not a reliable predictor of anxiety.
 
-2. **Distributions are non-normal.** Visual inspection via Q-Q plots and histograms confirms that all MH scores are non-normally distributed, validating the non-parametric approach.
+2. **Valence → Insomnia is the most robust finding across both analysis approaches.** This negative relationship (higher musical positivity = lower insomnia) held at both genre-level (ρ = −0.102, p = 0.006) and individual track-level (ρ = −0.079, p = 0.031), making it the most reliable signal in the dataset.
 
-3. **The heatmap shows consistently weak correlations (|r| < 0.15).** The strongest signal is `valence` vs `Insomnia` (r = −0.12), suggesting a tentative link between musical positivity and sleep quality.
+3. **Genre-level aggregation inflates the number of significant correlations.** Four pairs were significant at genre-level but only one survived individual track-level analysis, revealing that some signals were artifacts of averaging rather than true individual-level relationships.
 
-4. **Genre-level aggregation may mask meaningful patterns.** Individual track features assigned to a respondent via genre averaging lose the granularity needed to detect personal listening preferences. This motivates the unsupervised ML phase.
+4. **Insomnia is the most acoustically sensitive MH dimension**, appearing as the only significant target at the individual track level, and the most frequently significant at genre level.
+
+5. **Distributions are non-normal.** Visual inspection via Q-Q plots and histograms confirms that all MH scores are non-normally distributed, validating the non-parametric approach throughout.
+
+6. **107 respondents had missing or invalid BPM values** (outside 40–250 range). These were filled with genre-level average features as a fallback, ensuring full dataset coverage for all analyses.
 
 ---
 
