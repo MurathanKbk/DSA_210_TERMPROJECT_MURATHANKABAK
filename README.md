@@ -31,15 +31,15 @@ Music's psychological impact is widely studied, yet most research relies on subj
 
 ```
 .
+├── .gitignore
+├── Project PROPOSAL MURATHAN KABAK.pdf
 ├── README.md
-├── myData.ipynb              # Main analysis notebook
+├── edaAndhyphothesisTest.ipynb              # Main analysis notebook
+├── merged_data.csv           # Enriched merged dataset (output)
 ├── mxmh_survey_results.csv   # Primary survey dataset
 ├── dataset.csv               # Spotify audio features dataset
-├── merged_data.csv           # Enriched merged dataset (output)
-├── mh_distributions.png      # Mental health score distributions
-├── genre_mh_scores.png       # Average MH scores by genre
-├── correlation_heatmap.png   # Audio features vs MH scores heatmap
-└── qq_plots.png              # Q-Q plots for normality assessment
+
+
 ```
 
 ---
