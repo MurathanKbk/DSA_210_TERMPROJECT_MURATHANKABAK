@@ -4,5 +4,4 @@ __pycache__/
 *.pyc
 *.pynb_checkpoints
 .ipynb_checkpoints/
-dataset.csv
 .DS_Store
